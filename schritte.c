@@ -42,7 +42,7 @@ int measuring(int condition, int checkingValue) {
 /* function responcible for the basic walking back after all the data is collected */
 void walkingBack(int condition, int decide) {
     int i;
-	for (i=0; i<condition; i++){
+	for ( i=0; i<condition; i++){
 		printf("Schritt\n");
 	}
     if(decide==0){
@@ -73,92 +73,97 @@ void free2dCharArray(char** ipp, int dim1){
 }
 
 int main() {
-	int coordinats[4]={0,0,0,0}; // 0=-x, 1=-y, 2=x, 3=y
+    /* create coordinates array for measuring the size of the room and where I'm standing */
+	int coordinates[4]={0, 0, 0, 0}; /* 0=-x, 1=-y, 2=x, 3=y */
 
 	printf("STARTE ROBOTTER!\n\n");
-	coordinats[0] = measuring(0, 0);
-	coordinats[1] = measuring(0, 0);
-	coordinats[2] = measuring(1, coordinats[0]);
-	coordinats[3] = measuring(1, coordinats[1]);
-    int xSub = coordinats[2]-coordinats[0], ySub = coordinats[3]-coordinats[1];
+    coordinates[0] = measuring(0, 0);
+    coordinates[1] = measuring(0, 0);
+    coordinates[2] = measuring(1, coordinates[0]);
+    coordinates[3] = measuring(1, coordinates[1]);
+    int xSub = coordinates[2] - coordinates[0], ySub = coordinates[3] - coordinates[1];
 
-	printf("\nDer Raum hat folgende Groesse:\nx=%d y=%d\nDein Startpunkt:\nx=%d y=%d\n\n", coordinats[2], coordinats[3], xSub, ySub);
+	printf("\nDie begehbare Flaeche des Raumes ist:\nx=%d y=%d\nDein Startpunkt:\nx=%d y=%d\n\n", coordinates[2], coordinates[3], xSub, ySub);
 
-    if(coordinats[2]==0 && coordinats[3]==0) {
+    /* Start creating the 2d Array */
+
+    int x,y;
+    char **room;
+    if(coordinates[2] == 0 && coordinates[3] == 0) {
         /* not walked */
-        char room[3][3] = {
-                {'O', '-', 'O'},
-                {'I', 'X', 'I'},
-                {'O', '-', 'O'}
-        };
-        int i;
-        int j;
-        for(i=0; i<3; i++) {
-            for(j=0; j<3; j++){
-                printf("%c", room[i][j]);
-            }
-            printf("\n");
-        }
-        printf("\n");
-    } else if (coordinats[2]==0 && coordinats[3]>0) {
+        x=3,y=3;
+        room = malloc2dCharArray(y,x);
+
+    } else if (coordinates[2] == 0 && coordinates[3] > 0) {
         /* walked x==0 */
-        room = malloc2dCharArray(3, coordinats[3]+3);
-        for(int i=0; i<3; i++) {
-            for(int j=0; j<coordinats[3]+3; j++){
-                if (i==1 && j==ySub+1){
-                    room[i][j] = 'X';
-                } else if (i==0 && j==0 || i==3 && j==0 || i==0 && j==coordinats[3]+2 || i==3 && j==coordinats[3]+2){
-                    room[i][j] = 'O';
-                } else if ((j==0 || j==coordinats[3]+2) && (i!=0 || i!= 2) {
-                    room[i][j] = '-';
-                } else if ((j>0 || j<coordinats[3]+2) && (i==0 || i== 2)) {
-                    room[i][j] = 'I';
-                } else {
-                    room[i][j] = '.';
-                }
-            }
-        }
+        x=3, y= coordinates[3] + 3;
+        room = malloc2dCharArray(y, x);
 
-        for(i=0; i<3; i++) {
-            for(j=0; j<coordinats[3]+3; j++){
-                printf("%c", room[i][j]);
-            }
-            printf("\n");
-        }
-        printf("\n");
-
-        free2dCharArray(room, 3)
-    } else if (coordinats[2]>0 && coordinats[3]==0) {
+    } else if (coordinates[2] > 0 && coordinates[3] == 0) {
         /* walked y==0 */
-        room = malloc2dCharArray(coordinats[2]+3, 3);
+        x= coordinates[2] + 3, y=3;
+        room = malloc2dCharArray(y, x);
     } else {
         /* both walked */
-        room = malloc2dCharArray(coordinats[2]+3, coordinats[3]+3);
+        x= coordinates[2] + 3, y= coordinates[3] + 3;
+        room = malloc2dCharArray(y, x);
     }
-
-
-	if(xSub<coordinats[2] && xSub>0 && ySub<coordinats[3] && ySub>0) {
+    
+    /* start to populate the array with chars */
+    for(int i=0; i<y; i++) {
+        for(int j=0; j<x; j++){
+            if (i==ySub+1 && j==xSub+1){
+                room[i][j] = 'X';
+            } else if ((i==0 && j==0) || (i==0 && j==x-1) || (i==y-1 && j==0) || (i==y-1 && j==x-1)){
+                room[i][j] = 'O';
+            } else if ((i==0 || i==y-1) && (j!=0 && j!= x-1)){
+                room[i][j] = '-';
+            } else if ((i>0 || i<y-1) && (j==0 || j== x-1)) {
+                room[i][j] = 'I';
+            } else {
+                room[i][j] = '.';
+            }
+        }
+    }
+    
+    /* print the array to the console */
+    for(int i=0; i<y; i++) {
+        for(int j=0; j<x; j++){
+            printf("%c", room[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+    
+    /* free the memory in the HEAP */
+    free2dCharArray(room, y);
+    printf("Bitte druecke eine Taste um zurzueck zu laufen!");
+    getchar();
+    getchar();
+    
+    /* decide how to walk back to the beginning */
+	if(xSub < coordinates[2] && xSub > 0 && ySub < coordinates[3] && ySub > 0) {
         // Fall 3
-        walkingBack(coordinats[2], 1);
+        walkingBack(coordinates[2], 1);
         walkingBack(ySub, 1);
-        walkingBack(coordinats[0], 0);
-    } else if(xSub<coordinats[2] && xSub>0 && ySub==coordinats[3]) {
+        walkingBack(coordinates[0], 0);
+    } else if(xSub < coordinates[2] && xSub > 0 && ySub == coordinates[3]) {
         // Fall 2.5
-        walkingBack(coordinats[2], 1);
-        walkingBack(coordinats[3], 1);
-        walkingBack(coordinats[0], 0);
-    } else if(xSub==coordinats[2] && ySub==coordinats[3] && coordinats[2]>0 && coordinats[3]>0){
+        walkingBack(coordinates[2], 1);
+        walkingBack(coordinates[3], 1);
+        walkingBack(coordinates[0], 0);
+    } else if(xSub == coordinates[2] && ySub == coordinates[3] && coordinates[2] > 0 && coordinates[3] > 0){
         // Fall 2
-        walkingBack(coordinats[2], 1);
-        walkingBack(coordinats[3], 0);
-    } else if(xSub==coordinats[2] && ySub<coordinats[3] && ySub>0) {
+        walkingBack(coordinates[2], 1);
+        walkingBack(coordinates[3], 0);
+    } else if(xSub == coordinates[2] && ySub < coordinates[3] && ySub > 0) {
         // Fall 1.5
-        walkingBack(coordinats[2], 1);
+        walkingBack(coordinates[2], 1);
         walkingBack(ySub, 0);
-    } else if(xSub==coordinats[2] && ySub==0 && coordinats[2]>0) {
+    } else if(xSub == coordinates[2] && ySub == 0 && coordinates[2] > 0) {
         // Fall 1
-        walkingBack(coordinats[2], 0);
-    } else if(xSub<coordinats[2] && xSub>0 && ySub==0) {
+        walkingBack(coordinates[2], 0);
+    } else if(xSub < coordinates[2] && xSub > 0 && ySub == 0) {
         // Fall 0.5
         walkingBack(xSub, 0);
     } else {
@@ -166,6 +171,6 @@ int main() {
         printf("Der Robotter steht bereits am Ausgangspunkt!\n");
     }
 
-	printf("\nAUFGABE ERFUELLT!\n Schalte Robotter aus!\n");
+	printf("\nAUFGABE ERFUELLT!\nSchalte Robotter aus!\n");
     return 0;
 }
