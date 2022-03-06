@@ -84,24 +84,58 @@ int main() {
 
 	printf("\nDer Raum hat folgende Groesse:\nx=%d y=%d\nDein Startpunkt:\nx=%d y=%d\n\n", coordinats[2], coordinats[3], xSub, ySub);
 
-    if(coordinats[0]==0 && coordinats[1]==0 && coordinats[2]==0 && coordinats[3]==0) {
-        // none
+    if(coordinats[2]==0 && coordinats[3]==0) {
+        /* not walked */
         char room[3][3] = {
                 {'O', '-', 'O'},
                 {'I', 'X', 'I'},
                 {'O', '-', 'O'}
         };
-        for(int i=0; i<3; i++) {
-            for(int j=0; j<3; j++){
+        int i;
+        int j;
+        for(i=0; i<3; i++) {
+            for(j=0; j<3; j++){
                 printf("%c", room[i][j]);
             }
             printf("\n");
         }
         printf("\n");
-    } else if (coordinats[2]==0 && coordinats[3] > 0) {
-        //walked
+    } else if (coordinats[2]==0 && coordinats[3]>0) {
+        /* walked x==0 */
+        room = malloc2dCharArray(3, coordinats[3]+3);
+        for(int i=0; i<3; i++) {
+            for(int j=0; j<coordinats[3]+3; j++){
+                if (i==1 && j==ySub+1){
+                    room[i][j] = 'X';
+                } else if (i==0 && j==0 || i==3 && j==0 || i==0 && j==coordinats[3]+2 || i==3 && j==coordinats[3]+2){
+                    room[i][j] = 'O';
+                } else if ((j==0 || j==coordinats[3]+2) && (i!=0 || i!= 2) {
+                    room[i][j] = '-';
+                } else if ((j>0 || j<coordinats[3]+2) && (i==0 || i== 2)) {
+                    room[i][j] = 'I';
+                } else {
+                    room[i][j] = '.';
+                }
+            }
+        }
 
+        for(i=0; i<3; i++) {
+            for(j=0; j<coordinats[3]+3; j++){
+                printf("%c", room[i][j]);
+            }
+            printf("\n");
+        }
+        printf("\n");
+
+        free2dCharArray(room, 3)
+    } else if (coordinats[2]>0 && coordinats[3]==0) {
+        /* walked y==0 */
+        room = malloc2dCharArray(coordinats[2]+3, 3);
+    } else {
+        /* both walked */
+        room = malloc2dCharArray(coordinats[2]+3, coordinats[3]+3);
     }
+
 
 	if(xSub<coordinats[2] && xSub>0 && ySub<coordinats[3] && ySub>0) {
         // Fall 3
