@@ -2,7 +2,10 @@
 #include <stdlib.h>
 
 /* function responcible for measuring the distance walked until hit a wall */
-int measuring(int condition, int checkingValue) {
+/* condition is used to decide if */
+/* checkingValue is used for checking if the length */
+/*int measuring(int condition, int checkingValue)*/
+void measuring(int *coordinates){
     char decide[2];
     int counter=0, wall=0;
 
@@ -13,11 +16,11 @@ int measuring(int condition, int checkingValue) {
         switch(decide[0]){
             case 'y':
             case 'Y':
-                if (condition == 0) {
+                if (coordinates[5] > 1) {
                     printf("Drehe 90 Grad nach rechts!\n");
                     wall=1;
                 } else {
-                    if (counter < checkingValue) {
+                    if (counter < coordinates[0] || counter < coordinates[1]) {
                         printf("Du befindest dich nicht in einem rechteckigen Raum!\n");
                         exit(0);
                     } else {
@@ -36,5 +39,6 @@ int measuring(int condition, int checkingValue) {
                 break;
         }
     }
-    return counter;
+    coordinates[coordinates[4]] = counter;
+    coordinates[4]++;
 }
