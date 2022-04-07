@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(CRoboter
         Makefile
-        main.c measuring.c walkingBack.c malloc2dCharArray.c free2dCharArray.c)
+        main.c measuring.c walkingBack.c malloc2dCharArray.c free2dCharArray.c decideHowToWalkBack.c populate2dCharArray.c)

@@ -35,7 +35,7 @@ void measuring(int *coordinates){
                 counter++;
                 break;
             default:
-                printf("Ungültige Eingabe!\n");
+                printf("Ungueltige Eingabe!\n");
                 break;
         }
     }
