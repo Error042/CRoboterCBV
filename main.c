@@ -1,9 +1,9 @@
 #include <stdio.h>
 
 void measuring(int*);
-char **malloc2dCharArray(int, int);
+char **malloc2dCharArray(int*, int*);
 void populate2dCharArray(char**, int*, int*, int*, int*);
-void free2dCharArray(char**, int);
+void free2dCharArray(char**, int*);
 void decideHowToWalkBack(int*, int*, int*);
 
 int main() {
@@ -24,7 +24,7 @@ int main() {
     else if (coordinates[2] > 0 && coordinates[3] == 0) x= coordinates[2] + 3, y=3; /* walked y==0 */
     else x= coordinates[2] + 3, y= coordinates[3] + 3;                              /* both walked */
 
-    char **room = malloc2dCharArray(y, x);
+    char **room = malloc2dCharArray(&y, &x);
     
     /* start to populate the array with chars */
     populate2dCharArray(room, &x, &y, &xSub, &ySub);
@@ -38,7 +38,7 @@ int main() {
     }
     
     /* free the memory in the HEAP */
-    free2dCharArray(room, y);
+    free2dCharArray(room, &y);
     printf("\nO = Ecken des Raumes\nI & - = Waende eines Raumes\n. = Begehbare Flaeche\nX = Startpunkt des Roboters\n\nBitte druecke Enter um zurzueck zu laufen!");
     getchar();
     getchar();
