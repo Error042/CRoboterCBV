@@ -5,7 +5,7 @@
 /* condition is used to decide if */
 /* checkingValue is used for checking if the length */
 /*int measuring(int condition, int checkingValue)*/
-void measuring(int *coordinates){
+int measuring(int walked, int condition){
     char decide[2];
     int counter=0, wall=0;
 
@@ -16,11 +16,11 @@ void measuring(int *coordinates){
         switch(decide[0]){
             case 'y':
             case 'Y':
-                if (coordinates[5] > 1) {
+                if (walked <= 1) {
                     printf("Drehe 90 Grad nach rechts!\n");
                     wall=1;
                 } else {
-                    if (counter < coordinates[0] || counter < coordinates[1]) {
+                    if ((walked == 2 && counter < condition) || (walked == 3 && counter < condition)) {
                         printf("Du befindest dich nicht in einem rechteckigen Raum!\n");
                         exit(0);
                     } else {
@@ -39,6 +39,5 @@ void measuring(int *coordinates){
                 break;
         }
     }
-    coordinates[coordinates[4]] = counter;
-    coordinates[4]++;
+    return counter;
 }
